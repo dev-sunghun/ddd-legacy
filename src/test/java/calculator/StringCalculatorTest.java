@@ -56,6 +56,20 @@ class StringCalculatorTest {
     assertThat(result[2]).isEqualTo("2");
   }
 
+  @DisplayName("문자열을 커스텀 구분자로 split할 수 있다.")
+  @CsvSource({"'//;\n1;2;3'", "'//!\n1!2!3'", "'//@\n1@2@3'"})
+  @ParameterizedTest
+  void splitCustom(String input) {
+    // when
+    String[] result = ReflectionTestUtils.invokeMethod(STRING_CALCULATOR, "split", input);
+
+    // then
+    assertThat(result.length).isEqualTo(3);
+    assertThat(result[0]).isEqualTo("1");
+    assertThat(result[1]).isEqualTo("2");
+    assertThat(result[2]).isEqualTo("3");
+  }
+
   @DisplayName("split된 문자열을 숫자로 변환, 합을 계산할 수 있다.")
   @Test
   void addAll() {
