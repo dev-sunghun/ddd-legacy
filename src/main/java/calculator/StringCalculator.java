@@ -11,11 +11,11 @@ public class StringCalculator {
     return addAll(inputs);
   }
 
-  public String[] split(String input) {
+  private String[] split(String input) {
     return input.split(SEPERATOR);
   }
 
-  public int addAll(String[] inputs) {
+  private int addAll(String[] inputs) {
     int sum = 0;
     for (String input : inputs) {
       sum += Integer.parseInt(input);

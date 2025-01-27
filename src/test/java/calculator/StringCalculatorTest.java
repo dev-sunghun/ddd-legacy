@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 class StringCalculatorTest {
 
@@ -28,7 +29,7 @@ class StringCalculatorTest {
     String input = "1,1:2";
 
     // when
-    String[] result = STRING_CALCULATOR.split(input);
+    String[] result = ReflectionTestUtils.invokeMethod(STRING_CALCULATOR, "split", input);
 
     // then
     assertThat(result.length).isEqualTo(3);
@@ -41,11 +42,10 @@ class StringCalculatorTest {
   @Test
   void addAll() {
     // given
-    String input = "1,1:2";
-    String[] inputs = STRING_CALCULATOR.split(input);
+    String[] inputs = {"1", "1", "2"};
 
     // when
-    int sum = STRING_CALCULATOR.addAll(inputs);
+    int sum = ReflectionTestUtils.invokeMethod(STRING_CALCULATOR, "addAll", (Object) inputs);
 
     // then
     assertThat(sum).isEqualTo(4);
