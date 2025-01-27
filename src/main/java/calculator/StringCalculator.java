@@ -18,8 +18,24 @@ public class StringCalculator {
   private int addAll(String[] inputs) {
     int sum = 0;
     for (String input : inputs) {
-      sum += Integer.parseInt(input);
+      sum += parseStringToNumber(input);
     }
     return sum;
+  }
+
+  private int parseStringToNumber(String input) {
+    try {
+      int number = Integer.parseInt(input);
+      throwExceptionIfNegativeNumber(number);
+      return number;
+    } catch (NumberFormatException numberFormatException) {
+      throw new RuntimeException(ErrorMessage.NOT_NUMBER);
+    }
+  }
+
+  private void throwExceptionIfNegativeNumber(int number) {
+    if (number < 0) {
+      throw new RuntimeException(ErrorMessage.NEGATIVE_NUMBER);
+    }
   }
 }

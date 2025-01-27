@@ -1,6 +1,7 @@
 package calculator;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,5 +50,31 @@ class StringCalculatorTest {
 
     // then
     assertThat(sum).isEqualTo(4);
+  }
+
+  @DisplayName("split된 문자열이 숫자가 아니면 예외를 발생시킨다.")
+  @Test
+  void addAllThrowString() {
+    // given
+    String[] inputs = {"삼", "일", "이"};
+
+    // when, then
+    assertThatThrownBy(
+            () -> ReflectionTestUtils.invokeMethod(STRING_CALCULATOR, "addAll", (Object) inputs))
+        .isInstanceOf(RuntimeException.class)
+        .hasMessage(ErrorMessage.NOT_NUMBER);
+  }
+
+  @DisplayName("split된 문자열이 음수면 예외를 발생시킨다.")
+  @Test
+  void addAllThrowNegativeNumber() {
+    // given
+    String[] inputs = {"-1", "1", "2"};
+
+    // when, then
+    assertThatThrownBy(
+            () -> ReflectionTestUtils.invokeMethod(STRING_CALCULATOR, "addAll", (Object) inputs))
+        .isInstanceOf(RuntimeException.class)
+        .hasMessage(ErrorMessage.NEGATIVE_NUMBER);
   }
 }
