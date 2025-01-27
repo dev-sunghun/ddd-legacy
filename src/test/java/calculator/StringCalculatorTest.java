@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -14,11 +13,23 @@ class StringCalculatorTest {
   private final StringCalculator STRING_CALCULATOR = new StringCalculator();
 
   @DisplayName("구분자가 포함된 문자열로 총 합을 구할 수 있다.")
-  @CsvSource({"'1,1:2', 4", "'10,1,2', 13", "'1:1:2', 4", "100, 100"})
+  @CsvSource({
+    "'1,1:2', 4",
+    "'10,1,2', 13",
+    "'1:1:2', 4",
+    "100, 100",
+    "'//;\n1;2;3', 6",
+    "'//!\n1!2!7', 10",
+    "'//@\n10@2@3', 15"
+  })
   @ParameterizedTest
-  void calculateSum(String input, int expected) {
+  void calculateSum(String inputString, int expected) {
+    // Given
+    Input input = new Input(inputString);
+    StringCalculator stringCalculator = new StringCalculator();
+
     // when
-    int sum = STRING_CALCULATOR.calculateSum(input);
+    int sum = stringCalculator.calculateSum(input);
 
     // then
     assertThat(sum).isEqualTo(expected);
@@ -27,7 +38,11 @@ class StringCalculatorTest {
   @DisplayName("숫자가 아니거나, 음수인 문자열을 입력하면 예외를 발생시킨다.")
   @CsvSource({"삼", "-1", "abc", "!2"})
   @ParameterizedTest
-  void calculateSumException(String input) {
+  void calculateSumException(String inputString) {
+    // Given
+    Input input = new Input(inputString);
+    StringCalculator stringCalculator = new StringCalculator();
+
     // when, then
     assertThatThrownBy(() -> STRING_CALCULATOR.calculateSum(input))
         .isInstanceOf(RuntimeException.class)
@@ -40,71 +55,30 @@ class StringCalculatorTest {
                                 || msg.equals(ErrorMessage.NEGATIVE_NUMBER)));
   }
 
-  @DisplayName("문자열을 ',', ':' 구분자로 split할 수 있다.")
-  @Test
-  void split() {
-    // given
-    String input = "1,1:2";
-
-    // when
-    String[] result = ReflectionTestUtils.invokeMethod(STRING_CALCULATOR, "split", input);
-
-    // then
-    assertThat(result.length).isEqualTo(3);
-    assertThat(result[0]).isEqualTo("1");
-    assertThat(result[1]).isEqualTo("1");
-    assertThat(result[2]).isEqualTo("2");
-  }
-
-  @DisplayName("문자열을 커스텀 구분자로 split할 수 있다.")
-  @CsvSource({"'//;\n1;2;3'", "'//!\n1!2!3'", "'//@\n1@2@3'"})
+  @DisplayName("문자열이 숫자가 아니면 예외를 발생시킨다.")
+  @CsvSource({"삼", "일", "이"})
   @ParameterizedTest
-  void splitCustom(String input) {
-    // when
-    String[] result = ReflectionTestUtils.invokeMethod(STRING_CALCULATOR, "split", input);
-
-    // then
-    assertThat(result.length).isEqualTo(3);
-    assertThat(result[0]).isEqualTo("1");
-    assertThat(result[1]).isEqualTo("2");
-    assertThat(result[2]).isEqualTo("3");
-  }
-
-  @DisplayName("split된 문자열을 숫자로 변환, 합을 계산할 수 있다.")
-  @Test
-  void addAll() {
-    // given
-    String[] inputs = {"1", "1", "2"};
-
-    // when
-    int sum = ReflectionTestUtils.invokeMethod(STRING_CALCULATOR, "addAll", (Object) inputs);
-
-    // then
-    assertThat(sum).isEqualTo(4);
-  }
-
-  @DisplayName("split된 문자열이 숫자가 아니면 예외를 발생시킨다.")
-  @Test
-  void addAllThrowString() {
-    // given
-    String[] inputs = {"삼", "일", "이"};
+  void parseStringToNumberThrowString(String inputValue) {
 
     // when, then
     assertThatThrownBy(
-            () -> ReflectionTestUtils.invokeMethod(STRING_CALCULATOR, "addAll", (Object) inputs))
+            () ->
+                ReflectionTestUtils.invokeMethod(
+                    STRING_CALCULATOR, "parseStringToNumber", inputValue))
         .isInstanceOf(RuntimeException.class)
         .hasMessage(ErrorMessage.NOT_NUMBER);
   }
 
   @DisplayName("split된 문자열이 음수면 예외를 발생시킨다.")
-  @Test
-  void addAllThrowNegativeNumber() {
-    // given
-    String[] inputs = {"-1", "1", "2"};
+  @CsvSource({"-1", "-10"})
+  @ParameterizedTest
+  void parseStringToNumberThrowNegativeNumber(String inputValue) {
 
     // when, then
     assertThatThrownBy(
-            () -> ReflectionTestUtils.invokeMethod(STRING_CALCULATOR, "addAll", (Object) inputs))
+            () ->
+                ReflectionTestUtils.invokeMethod(
+                    STRING_CALCULATOR, "parseStringToNumber", inputValue))
         .isInstanceOf(RuntimeException.class)
         .hasMessage(ErrorMessage.NEGATIVE_NUMBER);
   }
