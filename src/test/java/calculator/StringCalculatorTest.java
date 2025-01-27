@@ -9,6 +9,18 @@ class StringCalculatorTest {
 
   private final StringCalculator STRING_CALCULATOR = new StringCalculator();
 
+  @DisplayName("구분자가 포함된 문자열로 총 합을 구할 수 있다.")
+  @Test
+  void calculateSum() {
+    // given
+    String input = "1,1:2";
+    // when
+    int sum = STRING_CALCULATOR.calculateSum(input);
+
+    // then
+    assertThat(sum).isEqualTo(4);
+  }
+
   @DisplayName("문자열을 ',', ':' 구분자로 split할 수 있다.")
   @Test
   void split() {
@@ -27,13 +39,13 @@ class StringCalculatorTest {
 
   @DisplayName("split된 문자열을 숫자로 변환, 합을 계산할 수 있다.")
   @Test
-  void add() {
+  void addAll() {
     // given
     String input = "1,1:2";
     String[] inputs = STRING_CALCULATOR.split(input);
 
     // when
-    int sum = STRING_CALCULATOR.add(inputs);
+    int sum = STRING_CALCULATOR.addAll(inputs);
 
     // then
     assertThat(sum).isEqualTo(4);
