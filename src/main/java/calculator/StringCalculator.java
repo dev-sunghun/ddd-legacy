@@ -5,7 +5,7 @@ public class StringCalculator {
 
   public int calculateSum(String input) {
     if (input == null || input.isEmpty()) {
-      return 0;
+      throw new RuntimeException(ErrorMessage.NOT_NUMBER);
     }
     String[] inputs = split(input);
     return addAll(inputs);
