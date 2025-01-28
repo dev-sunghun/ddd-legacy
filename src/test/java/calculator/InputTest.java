@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.springframework.test.util.ReflectionTestUtils;
 
 class InputTest {
 
@@ -17,7 +18,7 @@ class InputTest {
     final Input input = new Input(inputValue);
 
     // when
-    String[] inputValues = input.getValues();
+    String[] inputValues = ReflectionTestUtils.invokeMethod(input, "split", inputValue);
 
     // then
     assertThat(inputValues.length).isEqualTo(3);
@@ -34,7 +35,7 @@ class InputTest {
     final Input input = new Input(inputValue);
 
     // when
-    String[] inputValues = input.getValues();
+    String[] inputValues = ReflectionTestUtils.invokeMethod(input, "split", inputValue);
 
     // then
     assertThat(inputValues.length).isEqualTo(3);

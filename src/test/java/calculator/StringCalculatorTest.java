@@ -6,7 +6,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.springframework.test.util.ReflectionTestUtils;
 
 class StringCalculatorTest {
 
@@ -26,10 +25,9 @@ class StringCalculatorTest {
   void calculateSum(String inputString, int expected) {
     // Given
     Input input = new Input(inputString);
-    StringCalculator stringCalculator = new StringCalculator();
 
     // when
-    int sum = stringCalculator.calculateSum(input);
+    int sum = STRING_CALCULATOR.calculateSum(input);
 
     // then
     assertThat(sum).isEqualTo(expected);
@@ -39,12 +37,12 @@ class StringCalculatorTest {
   @CsvSource({"삼", "-1", "abc", "!2"})
   @ParameterizedTest
   void calculateSumException(String inputString) {
-    // Given
-    Input input = new Input(inputString);
-    StringCalculator stringCalculator = new StringCalculator();
-
     // when, then
-    assertThatThrownBy(() -> STRING_CALCULATOR.calculateSum(input))
+    assertThatThrownBy(
+            () -> {
+              Input input = new Input(inputString);
+              STRING_CALCULATOR.calculateSum(input);
+            })
         .isInstanceOf(RuntimeException.class)
         .satisfies(
             e ->
@@ -53,33 +51,5 @@ class StringCalculatorTest {
                         msg ->
                             msg.equals(ErrorMessage.NOT_NUMBER)
                                 || msg.equals(ErrorMessage.NEGATIVE_NUMBER)));
-  }
-
-  @DisplayName("문자열이 숫자가 아니면 예외를 발생시킨다.")
-  @CsvSource({"삼", "일", "이"})
-  @ParameterizedTest
-  void parseStringToNumberThrowString(String inputValue) {
-
-    // when, then
-    assertThatThrownBy(
-            () ->
-                ReflectionTestUtils.invokeMethod(
-                    STRING_CALCULATOR, "parseStringToNumber", inputValue))
-        .isInstanceOf(RuntimeException.class)
-        .hasMessage(ErrorMessage.NOT_NUMBER);
-  }
-
-  @DisplayName("split된 문자열이 음수면 예외를 발생시킨다.")
-  @CsvSource({"-1", "-10"})
-  @ParameterizedTest
-  void parseStringToNumberThrowNegativeNumber(String inputValue) {
-
-    // when, then
-    assertThatThrownBy(
-            () ->
-                ReflectionTestUtils.invokeMethod(
-                    STRING_CALCULATOR, "parseStringToNumber", inputValue))
-        .isInstanceOf(RuntimeException.class)
-        .hasMessage(ErrorMessage.NEGATIVE_NUMBER);
   }
 }
