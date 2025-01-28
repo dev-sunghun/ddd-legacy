@@ -1,7 +1,5 @@
 package calculator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,15 +8,17 @@ public class Input {
   private static final String SEPERATOR = "[,:]";
   private static final Pattern CUSTOM_SEPERATOR_PATTERN = Pattern.compile("//(.)\n(.*)");
 
-  private final List<PositiveNumber> positiveNumbers = new ArrayList<>();
+  private final PositiveNumbers positiveNumbers = new PositiveNumbers();
 
   public Input(String inputString) {
     String[] values = split(inputString);
-    Arrays.stream(values).toList().forEach(value -> positiveNumbers.add(new PositiveNumber(value)));
+    for (String value : values) {
+      positiveNumbers.add(new PositiveNumber(value));
+    }
   }
 
   public List<PositiveNumber> getPositiveNumbers() {
-    return positiveNumbers;
+    return positiveNumbers.get();
   }
 
   private String[] split(String input) {
