@@ -5,8 +5,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import java.util.List;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.mock.FakeMenuGroupRepository;
 import kitchenpos.mock.fixture.MenuGroupFixture;
+import kitchenpos.mock.persistence.FakeMenuGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

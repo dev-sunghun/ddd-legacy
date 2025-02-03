@@ -1,4 +1,4 @@
-package kitchenpos.mock;
+package kitchenpos.mock.persistence;
 
 import java.util.ArrayList;
 import java.util.List;
