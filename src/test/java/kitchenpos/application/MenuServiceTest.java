@@ -39,7 +39,7 @@ class MenuServiceTest {
         FakePurgomalumClient purgomalumClient = new FakePurgomalumClient(new RestTemplateBuilder());
         this.menuService = new MenuService(menuRepository, menuGroupRepository, productRepository,
             purgomalumClient);
-        this.testContainer = new TestContainer(menuGroupRepository, productRepository);
+        this.testContainer = new TestContainer(menuGroupRepository, productRepository, menuRepository);
     }
 
     @DisplayName("메뉴를 생성할 수 있다.")
