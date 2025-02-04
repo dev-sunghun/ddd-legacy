@@ -7,13 +7,16 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 import kitchenpos.mock.fixture.MenuFixture;
 import kitchenpos.mock.fixture.MenuGroupFixture;
 import kitchenpos.mock.fixture.MenuProductFixture;
+import kitchenpos.mock.fixture.OrderTableFixture;
 import kitchenpos.mock.fixture.ProductFixture;
 import kitchenpos.mock.persistence.FakeMenuGroupRepository;
 import kitchenpos.mock.persistence.FakeMenuRepository;
+import kitchenpos.mock.persistence.FakeOrderTableRepository;
 import kitchenpos.mock.persistence.FakeProductRepository;
 
 public class TestContainer {
@@ -23,13 +26,16 @@ public class TestContainer {
 
     private final FakeProductRepository productRepository;
     private final FakeMenuRepository menuRepository;
+    private final FakeOrderTableRepository orderTableRepository;
     private final MenuGroup defaultMenuGroup;
 
     public TestContainer(FakeMenuGroupRepository menuGroupRepository,
-        FakeProductRepository productRepository, FakeMenuRepository menuRepository) {
+        FakeProductRepository productRepository, FakeMenuRepository menuRepository,
+        FakeOrderTableRepository orderTableRepository) {
         this.productRepository = productRepository;
         this.defaultMenuGroup = menuGroupRepository.save(MenuGroupFixture.create("추천 메뉴"));
         this.menuRepository = menuRepository;
+        this.orderTableRepository = orderTableRepository;
     }
 
     public MenuGroup getSavedMenuGroup() {
@@ -65,13 +71,38 @@ public class TestContainer {
         return menuRepository.save(menu);
     }
 
+    public Menu getSavedMenu(Menu menu) {
+        return menuRepository.save(menu);
+    }
+
     public OrderLineItem getOrderLineItem(int quantity) {
         Menu menu = getSavedMenu();
         OrderLineItem orderLineItem = new OrderLineItem();
         orderLineItem.setMenu(menu);
         orderLineItem.setMenuId(menu.getId());
         orderLineItem.setQuantity(quantity);
-        orderLineItem.setPrice(PRICE);
+        orderLineItem.setPrice(menu.getPrice());
         return orderLineItem;
+    }
+
+    public OrderLineItem getOrderLineItem(Menu menu) {
+        OrderLineItem orderLineItem = new OrderLineItem();
+        orderLineItem.setMenu(menu);
+        orderLineItem.setMenuId(menu.getId());
+        orderLineItem.setQuantity(1);
+        orderLineItem.setPrice(menu.getPrice());
+        return orderLineItem;
+    }
+
+    public List<OrderLineItem> getOrderLineItems() {
+        List<OrderLineItem> orderLineItems = new ArrayList<>();
+        orderLineItems.add(getOrderLineItem(1));
+        return orderLineItems;
+    }
+
+    public OrderTable getSavedOrderTable() {
+        OrderTable orderTable = OrderTableFixture.create("1번");
+        orderTable.setOccupied(true);
+        return orderTableRepository.save(orderTable);
     }
 }

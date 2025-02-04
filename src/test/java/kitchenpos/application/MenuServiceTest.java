@@ -16,6 +16,7 @@ import kitchenpos.mock.fixture.MenuFixture;
 import kitchenpos.mock.fixture.MenuProductFixture;
 import kitchenpos.mock.persistence.FakeMenuGroupRepository;
 import kitchenpos.mock.persistence.FakeMenuRepository;
+import kitchenpos.mock.persistence.FakeOrderTableRepository;
 import kitchenpos.mock.persistence.FakeProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,7 +41,7 @@ class MenuServiceTest {
         this.menuService = new MenuService(menuRepository, menuGroupRepository, productRepository,
             purgomalumClient);
         this.testContainer = new TestContainer(menuGroupRepository, productRepository,
-            menuRepository);
+            menuRepository, new FakeOrderTableRepository());
     }
 
     @DisplayName("메뉴를 생성할 수 있다.")
