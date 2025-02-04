@@ -173,7 +173,7 @@ class OrderTableServiceTest {
 
         // then
         assertThat(orderTables)
-            .hasSize(9)
+            .hasSize(orderTableNames.size())
             .extracting(OrderTable::getName)
             .containsExactlyInAnyOrder(orderTableNames.toArray(String[]::new));
     }

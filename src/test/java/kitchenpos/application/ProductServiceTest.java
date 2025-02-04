@@ -20,11 +20,12 @@ import org.springframework.data.util.Pair;
 
 class ProductServiceTest {
 
+    private static final String PRODUCT_NAME = "치킨";
+    private static final String BAD_PRODUCT_NAME = "bad 치킨";
+    private static final BigDecimal PRICE = BigDecimal.valueOf(20000);
+    private static final BigDecimal MINUS_PRICE = BigDecimal.valueOf(-100);
+
     private ProductService productService;
-    private final String PRODUCT_NAME = "치킨";
-    private final String BAD_PRODUCT_NAME = "bad 치킨";
-    private final BigDecimal PRICE = BigDecimal.valueOf(20000);
-    private final BigDecimal MINUS_PRICE = BigDecimal.valueOf(-100);
 
     @BeforeEach
     void setUp() {
@@ -126,7 +127,7 @@ class ProductServiceTest {
 
         // then
         assertThat(savedProducts)
-            .hasSize(products.size())  // 동적 사이즈 검증 (검색 결과 5,15참조)
+            .hasSize(products.size())
             .extracting(Product::getName, Product::getPrice)
             .containsExactlyInAnyOrderElementsOf(
                 products.stream()
@@ -134,6 +135,4 @@ class ProductServiceTest {
                     .toList()
             );
     }
-
-
 }

@@ -46,8 +46,8 @@ class MenuServiceTest {
     @Test
     void create() {
         // given
-        MenuGroup menuGroup = testContainer.getMenuGroup();
         int quantity = 2;
+        MenuGroup menuGroup = testContainer.getMenuGroup();
         List<MenuProduct> menuProducts = testContainer.getMenuProducts(quantity);
         Menu menu = MenuFixture.create(MENU_NAME, TestContainer.PRICE, MENU_DISPLAYED, menuGroup,
             menuProducts);
@@ -70,11 +70,9 @@ class MenuServiceTest {
     @Test
     void createPriceException() {
         // given
-        MenuGroup menuGroup = testContainer.getMenuGroup();
         int quantity = 2;
-        List<MenuProduct> menuProducts = testContainer.getMenuProducts(quantity);
         Menu menu = MenuFixture.create(MENU_NAME, TestContainer.MINUS_PRICE, MENU_DISPLAYED,
-            menuGroup, menuProducts);
+            testContainer.getMenuGroup(), testContainer.getMenuProducts(quantity));
 
         // when then
         assertThatThrownBy(() -> menuService.create(menu))
@@ -85,10 +83,9 @@ class MenuServiceTest {
     @Test
     void createMenuProductsException() {
         // given
-        MenuGroup menuGroup = testContainer.getMenuGroup();
         List<MenuProduct> menuProducts = null;
         Menu menu = MenuFixture.create(MENU_NAME, TestContainer.MINUS_PRICE, MENU_DISPLAYED,
-            menuGroup, menuProducts);
+            testContainer.getMenuGroup(), menuProducts);
 
         // when then
         assertThatThrownBy(() -> menuService.create(menu))
@@ -97,16 +94,14 @@ class MenuServiceTest {
 
     @DisplayName("상품 구성 개수가 일치 하지 않으면 메뉴 생성 시, 예외가 발생 한다.")
     @Test
-    void createMenuProductsSizrException() {
+    void createMenuProductsSizeException() {
         // given
-        MenuGroup menuGroup = testContainer.getMenuGroup();
         int quantity = 2;
         List<MenuProduct> menuProducts = testContainer.getMenuProducts(quantity);
         MenuProduct menuProduct = MenuProductFixture.create(testContainer.getProduct(), 1);
         menuProducts.add(menuProduct);
-//        menuProducts.add(MenuProductFixture.create(testContainer.getProduct(), 1));
         Menu menu = MenuFixture.create(MENU_NAME, TestContainer.MINUS_PRICE, MENU_DISPLAYED,
-            menuGroup, menuProducts);
+            testContainer.getMenuGroup(), menuProducts);
 
         // when then
         assertThatThrownBy(() -> menuService.create(menu))
@@ -117,11 +112,9 @@ class MenuServiceTest {
     @Test
     void createMenuProductQuantityException() {
         // given
-        MenuGroup menuGroup = testContainer.getMenuGroup();
         int quantity = 0;
-        List<MenuProduct> menuProducts = testContainer.getMenuProducts(quantity);
         Menu menu = MenuFixture.create(MENU_NAME, TestContainer.MINUS_PRICE, MENU_DISPLAYED,
-            menuGroup, menuProducts);
+            testContainer.getMenuGroup(), testContainer.getMenuProducts(quantity));
 
         // when then
         assertThatThrownBy(() -> menuService.create(menu))
@@ -132,14 +125,14 @@ class MenuServiceTest {
     @Test
     void createMenuProductPriceException() {
         // given
-        MenuGroup menuGroup = testContainer.getMenuGroup();
+        int quantity = 1;
+
         String productName = "양념치킨";
         BigDecimal productPrice = BigDecimal.ZERO;
         Product product = testContainer.getProduct(productName, productPrice);
-        int quantity = 1;
-        List<MenuProduct> menuProducts = testContainer.getMenuProducts(product, quantity);
+
         Menu menu = MenuFixture.create(MENU_NAME, TestContainer.MINUS_PRICE, MENU_DISPLAYED,
-            menuGroup, menuProducts);
+            testContainer.getMenuGroup(), testContainer.getMenuProducts(product, quantity));
 
         // when then
         assertThatThrownBy(() -> menuService.create(menu))
@@ -150,12 +143,10 @@ class MenuServiceTest {
     @Test
     void createNameException() {
         // given
-        MenuGroup menuGroup = testContainer.getMenuGroup();
         int quantity = 2;
-        List<MenuProduct> menuProducts = testContainer.getMenuProducts(quantity);
         Menu menu = MenuFixture.create(BAD_MENU_NAME, TestContainer.PRICE, MENU_DISPLAYED,
-            menuGroup,
-            menuProducts);
+            testContainer.getMenuGroup(),
+            testContainer.getMenuProducts(quantity));
 
         // when then
         assertThatThrownBy(() -> menuService.create(menu))
@@ -251,7 +242,7 @@ class MenuServiceTest {
 
         // then
         assertThat(savedMenus)
-            .hasSize(2)  // 동적 사이즈 검증 (검색 결과 5,15참조)
+            .hasSize(2)
             .extracting(Menu::getId)
             .containsExactlyInAnyOrder(anotherSavedMenu.getId(), savedMenu.getId());
     }

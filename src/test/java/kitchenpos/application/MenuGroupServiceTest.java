@@ -37,14 +37,13 @@ class MenuGroupServiceTest {
     @ParameterizedTest
     @NullSource
     @EmptySource
-    void createWithEName(String name) {
+    void createNameException(String name) {
         // given
         MenuGroup menuGroup = MenuGroupFixture.create(name);
 
         // when then
         assertThatThrownBy(() -> menuGroupService.create(menuGroup))
-            .isInstanceOf(IllegalArgumentException.class)
-        ;
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("저장된 메뉴그룹 리스트를 조회할 수 있다.")
@@ -52,18 +51,18 @@ class MenuGroupServiceTest {
     void findAll() {
         // given
         List<String> names = List.of("추천 메뉴", "오늘의 메뉴", "할인 메뉴", "세트 메뉴");
-        for (String name : names) {
+        names.forEach(name -> {
             MenuGroup menuGroup = MenuGroupFixture.create(name);
             menuGroupService.create(menuGroup);
-        }
+        });
 
         // when
         List<MenuGroup> menuGroups = menuGroupService.findAll();
 
         // then
         assertThat(menuGroups)
-            .hasSize(4)
-            .extracting("name")
-            .containsExactlyInAnyOrder("추천 메뉴", "오늘의 메뉴", "할인 메뉴", "세트 메뉴");
+            .hasSize(names.size())
+            .extracting(MenuGroup::getName)
+            .containsExactlyInAnyOrder(names.toArray(String[]::new));
     }
 }
