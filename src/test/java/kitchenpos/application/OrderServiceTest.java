@@ -14,7 +14,7 @@ import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderType;
-import kitchenpos.mock.TestContainer;
+import kitchenpos.mock.TestUtil;
 import kitchenpos.mock.client.FakeKitchenridersClient;
 import kitchenpos.mock.fixture.MenuFixture;
 import kitchenpos.mock.fixture.OrderFixture;
@@ -33,7 +33,7 @@ import org.junit.jupiter.params.provider.NullSource;
 class OrderServiceTest {
 
     private OrderService orderService;
-    private TestContainer testContainer;
+    private TestUtil testUtil;
     private FakeOrderRepository orderRepository;
 
     @BeforeEach
@@ -46,7 +46,7 @@ class OrderServiceTest {
         FakeProductRepository productRepository = new FakeProductRepository();
         this.orderService = new OrderService(orderRepository, menuRepository, orderTableRepository,
             kitchenridersClient);
-        this.testContainer = new TestContainer(menuGroupRepository, productRepository,
+        this.testUtil = new TestUtil(menuGroupRepository, productRepository,
             menuRepository, orderTableRepository);
     }
 
@@ -54,7 +54,7 @@ class OrderServiceTest {
     @Test
     void createTypeException() {
         // given
-        Order order = OrderFixture.create(null, testContainer.getOrderLineItems(),
+        Order order = OrderFixture.create(null, testUtil.getOrderLineItems(),
             null,
             null);
 
@@ -80,7 +80,7 @@ class OrderServiceTest {
     @Test
     void createSizeException() {
         // given
-        List<OrderLineItem> orderLineItems = testContainer.getOrderLineItems();
+        List<OrderLineItem> orderLineItems = testUtil.getOrderLineItems();
         orderLineItems.add(new OrderLineItem());
         Order order = OrderFixture.create(OrderType.DELIVERY, orderLineItems,
             null,
@@ -95,12 +95,12 @@ class OrderServiceTest {
     @Test
     void createMenuHideException() {
         // given
-        Menu menu = testContainer.getSavedMenu(
+        Menu menu = testUtil.getSavedMenu(
             MenuFixture.create("두마리 치킨", BigDecimal.valueOf(28_000), false,
-                testContainer.getSavedMenuGroup(),
-                testContainer.getMenuProducts(1)));
+                testUtil.getSavedMenuGroup(),
+                testUtil.getMenuProducts(1)));
         List<OrderLineItem> orderLineItems = new ArrayList<>();
-        orderLineItems.add(testContainer.getOrderLineItem(menu));
+        orderLineItems.add(testUtil.getOrderLineItem(menu));
         Order order = OrderFixture.create(OrderType.DELIVERY, orderLineItems,
             null,
             null);
@@ -114,8 +114,8 @@ class OrderServiceTest {
     @Test
     void createMenuPriceException() {
         // given
-        Menu menu = testContainer.getSavedMenu();
-        OrderLineItem orderLineItem = testContainer.getOrderLineItem(menu);
+        Menu menu = testUtil.getSavedMenu();
+        OrderLineItem orderLineItem = testUtil.getOrderLineItem(menu);
         orderLineItem.setPrice(BigDecimal.ZERO);
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(orderLineItem);
@@ -134,12 +134,12 @@ class OrderServiceTest {
     void createOrderLineItemQuantityException() {
         // given
         int quantity = -1;
-        OrderLineItem minusOrderLineItem = testContainer.getOrderLineItem(quantity);
+        OrderLineItem minusOrderLineItem = testUtil.getOrderLineItem(quantity);
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(minusOrderLineItem);
         Order order = OrderFixture.create(OrderType.DELIVERY, orderLineItems,
             null,
-            testContainer.getSavedOrderTable());
+            testUtil.getSavedOrderTable());
 
         // when then
         assertThatThrownBy(() -> orderService.create(order))
@@ -168,7 +168,7 @@ class OrderServiceTest {
     @EmptySource
     void createDeliveryAddressException(String deliveryAddress) {
         // given
-        Order order = OrderFixture.create(OrderType.DELIVERY, testContainer.getOrderLineItems(),
+        Order order = OrderFixture.create(OrderType.DELIVERY, testUtil.getOrderLineItems(),
             deliveryAddress,
             null);
 
@@ -197,9 +197,9 @@ class OrderServiceTest {
     @Test
     void createOrderTableNotOccupiedException() {
         // given
-        OrderTable orderTable = testContainer.getSavedOrderTable();
+        OrderTable orderTable = testUtil.getSavedOrderTable();
         orderTable.setOccupied(false);
-        Order order = OrderFixture.create(OrderType.EAT_IN, testContainer.getOrderLineItems(), null,
+        Order order = OrderFixture.create(OrderType.EAT_IN, testUtil.getOrderLineItems(), null,
             orderTable);
 
         // when then
@@ -442,19 +442,19 @@ class OrderServiceTest {
 
     private Order createDeliveryOrder() {
         String deliveryAddress = "서울시 주소";
-        return OrderFixture.create(OrderType.DELIVERY, testContainer.getOrderLineItems(),
+        return OrderFixture.create(OrderType.DELIVERY, testUtil.getOrderLineItems(),
             deliveryAddress,
             null);
     }
 
     private Order createEatInOrder() {
-        OrderTable orderTable = testContainer.getSavedOrderTable();
-        return OrderFixture.create(OrderType.EAT_IN, testContainer.getOrderLineItems(), null,
+        OrderTable orderTable = testUtil.getSavedOrderTable();
+        return OrderFixture.create(OrderType.EAT_IN, testUtil.getOrderLineItems(), null,
             orderTable);
     }
 
     private Order createTakeoutOrder() {
-        return OrderFixture.create(OrderType.TAKEOUT, testContainer.getOrderLineItems(),
+        return OrderFixture.create(OrderType.TAKEOUT, testUtil.getOrderLineItems(),
             null,
             null);
     }

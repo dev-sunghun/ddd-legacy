@@ -19,7 +19,7 @@ import kitchenpos.mock.persistence.FakeMenuRepository;
 import kitchenpos.mock.persistence.FakeOrderTableRepository;
 import kitchenpos.mock.persistence.FakeProductRepository;
 
-public class TestContainer {
+public class TestUtil {
 
     public static final BigDecimal PRICE = BigDecimal.valueOf(28_000);
     public static final BigDecimal MINUS_PRICE = BigDecimal.valueOf(-100);
@@ -29,7 +29,7 @@ public class TestContainer {
     private final FakeOrderTableRepository orderTableRepository;
     private final MenuGroup defaultMenuGroup;
 
-    public TestContainer(FakeMenuGroupRepository menuGroupRepository,
+    public TestUtil(FakeMenuGroupRepository menuGroupRepository,
         FakeProductRepository productRepository, FakeMenuRepository menuRepository,
         FakeOrderTableRepository orderTableRepository) {
         this.productRepository = productRepository;
