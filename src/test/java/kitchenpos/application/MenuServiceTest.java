@@ -28,8 +28,8 @@ class MenuServiceTest {
     private static final String BAD_MENU_NAME = "bad 두마리 치킨";
     private static final boolean MENU_DISPLAYED = true;
 
-    private TestContainer testContainer;
     private MenuService menuService;
+    private TestContainer testContainer;
 
     @BeforeEach
     void setUp() {
@@ -39,7 +39,8 @@ class MenuServiceTest {
         FakePurgomalumClient purgomalumClient = new FakePurgomalumClient(new RestTemplateBuilder());
         this.menuService = new MenuService(menuRepository, menuGroupRepository, productRepository,
             purgomalumClient);
-        this.testContainer = new TestContainer(menuGroupRepository, productRepository, menuRepository);
+        this.testContainer = new TestContainer(menuGroupRepository, productRepository,
+            menuRepository);
     }
 
     @DisplayName("메뉴를 생성할 수 있다.")
@@ -47,7 +48,7 @@ class MenuServiceTest {
     void create() {
         // given
         int quantity = 2;
-        MenuGroup menuGroup = testContainer.getMenuGroup();
+        MenuGroup menuGroup = testContainer.getSavedMenuGroup();
         List<MenuProduct> menuProducts = testContainer.getMenuProducts(quantity);
         Menu menu = MenuFixture.create(MENU_NAME, TestContainer.PRICE, MENU_DISPLAYED, menuGroup,
             menuProducts);
@@ -72,7 +73,7 @@ class MenuServiceTest {
         // given
         int quantity = 2;
         Menu menu = MenuFixture.create(MENU_NAME, TestContainer.MINUS_PRICE, MENU_DISPLAYED,
-            testContainer.getMenuGroup(), testContainer.getMenuProducts(quantity));
+            testContainer.getSavedMenuGroup(), testContainer.getMenuProducts(quantity));
 
         // when then
         assertThatThrownBy(() -> menuService.create(menu))
@@ -85,7 +86,7 @@ class MenuServiceTest {
         // given
         List<MenuProduct> menuProducts = null;
         Menu menu = MenuFixture.create(MENU_NAME, TestContainer.MINUS_PRICE, MENU_DISPLAYED,
-            testContainer.getMenuGroup(), menuProducts);
+            testContainer.getSavedMenuGroup(), menuProducts);
 
         // when then
         assertThatThrownBy(() -> menuService.create(menu))
@@ -98,10 +99,10 @@ class MenuServiceTest {
         // given
         int quantity = 2;
         List<MenuProduct> menuProducts = testContainer.getMenuProducts(quantity);
-        MenuProduct menuProduct = MenuProductFixture.create(testContainer.getProduct(), 1);
+        MenuProduct menuProduct = MenuProductFixture.create(testContainer.getSavedProduct(), 1);
         menuProducts.add(menuProduct);
         Menu menu = MenuFixture.create(MENU_NAME, TestContainer.MINUS_PRICE, MENU_DISPLAYED,
-            testContainer.getMenuGroup(), menuProducts);
+            testContainer.getSavedMenuGroup(), menuProducts);
 
         // when then
         assertThatThrownBy(() -> menuService.create(menu))
@@ -114,7 +115,7 @@ class MenuServiceTest {
         // given
         int quantity = 0;
         Menu menu = MenuFixture.create(MENU_NAME, TestContainer.MINUS_PRICE, MENU_DISPLAYED,
-            testContainer.getMenuGroup(), testContainer.getMenuProducts(quantity));
+            testContainer.getSavedMenuGroup(), testContainer.getMenuProducts(quantity));
 
         // when then
         assertThatThrownBy(() -> menuService.create(menu))
@@ -129,10 +130,10 @@ class MenuServiceTest {
 
         String productName = "양념치킨";
         BigDecimal productPrice = BigDecimal.ZERO;
-        Product product = testContainer.getProduct(productName, productPrice);
+        Product product = testContainer.getSavedProduct(productName, productPrice);
 
         Menu menu = MenuFixture.create(MENU_NAME, TestContainer.MINUS_PRICE, MENU_DISPLAYED,
-            testContainer.getMenuGroup(), testContainer.getMenuProducts(product, quantity));
+            testContainer.getSavedMenuGroup(), testContainer.getMenuProducts(product, quantity));
 
         // when then
         assertThatThrownBy(() -> menuService.create(menu))
@@ -145,7 +146,7 @@ class MenuServiceTest {
         // given
         int quantity = 2;
         Menu menu = MenuFixture.create(BAD_MENU_NAME, TestContainer.PRICE, MENU_DISPLAYED,
-            testContainer.getMenuGroup(),
+            testContainer.getSavedMenuGroup(),
             testContainer.getMenuProducts(quantity));
 
         // when then
@@ -158,7 +159,7 @@ class MenuServiceTest {
     void changePrice() {
         // given
         Menu menu = MenuFixture.create(MENU_NAME, TestContainer.PRICE, MENU_DISPLAYED,
-            testContainer.getMenuGroup(),
+            testContainer.getSavedMenuGroup(),
             testContainer.getMenuProducts(2));
         Menu savedMenu = menuService.create(menu);
 
@@ -178,7 +179,7 @@ class MenuServiceTest {
     void changePriceException() {
         // given
         Menu menu = MenuFixture.create(MENU_NAME, TestContainer.PRICE, MENU_DISPLAYED,
-            testContainer.getMenuGroup(),
+            testContainer.getSavedMenuGroup(),
             testContainer.getMenuProducts(2));
         Menu savedMenu = menuService.create(menu);
 
@@ -196,7 +197,7 @@ class MenuServiceTest {
         // given
         boolean displayed = false;
         Menu menu = MenuFixture.create(MENU_NAME, TestContainer.PRICE, displayed,
-            testContainer.getMenuGroup(),
+            testContainer.getSavedMenuGroup(),
             testContainer.getMenuProducts(2));
         Menu savedMenu = menuService.create(menu);
 
@@ -214,7 +215,7 @@ class MenuServiceTest {
     void hide() {
         // given
         Menu menu = MenuFixture.create(MENU_NAME, TestContainer.PRICE, MENU_DISPLAYED,
-            testContainer.getMenuGroup(),
+            testContainer.getSavedMenuGroup(),
             testContainer.getMenuProducts(2));
         Menu savedMenu = menuService.create(menu);
 
@@ -232,7 +233,7 @@ class MenuServiceTest {
     void findAll() {
         // given
         Menu menu = MenuFixture.create(MENU_NAME, TestContainer.PRICE, MENU_DISPLAYED,
-            testContainer.getMenuGroup(),
+            testContainer.getSavedMenuGroup(),
             testContainer.getMenuProducts(2));
         Menu savedMenu = menuService.create(menu);
         Menu anotherSavedMenu = menuService.create(menu);

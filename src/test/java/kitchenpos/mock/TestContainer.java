@@ -32,15 +32,15 @@ public class TestContainer {
         this.menuRepository = menuRepository;
     }
 
-    public MenuGroup getMenuGroup() {
+    public MenuGroup getSavedMenuGroup() {
         return defaultMenuGroup;
     }
 
-    public Product getProduct(String name, BigDecimal price) {
+    public Product getSavedProduct(String name, BigDecimal price) {
         return productRepository.save(ProductFixture.create(name, price));
     }
 
-    public Product getProduct() {
+    public Product getSavedProduct() {
         String name = "치킨";
         BigDecimal price = BigDecimal.valueOf(20000);
         return productRepository.save(ProductFixture.create(name, price));
@@ -48,7 +48,7 @@ public class TestContainer {
 
     public List<MenuProduct> getMenuProducts(int quantity) {
         List<MenuProduct> menuProducts = new ArrayList<>();
-        menuProducts.add(MenuProductFixture.create(getProduct(), quantity));
+        menuProducts.add(MenuProductFixture.create(getSavedProduct(), quantity));
         return menuProducts;
     }
 
@@ -58,15 +58,15 @@ public class TestContainer {
         return menuProducts;
     }
 
-    public Menu getMenu() {
+    public Menu getSavedMenu() {
         int quantity = 2;
-        Menu menu = MenuFixture.create("두마리 치킨", PRICE, true, getMenuGroup(),
+        Menu menu = MenuFixture.create("두마리 치킨", PRICE, true, getSavedMenuGroup(),
             getMenuProducts(quantity));
         return menuRepository.save(menu);
     }
 
     public OrderLineItem getOrderLineItem(int quantity) {
-        Menu menu = getMenu();
+        Menu menu = getSavedMenu();
         OrderLineItem orderLineItem = new OrderLineItem();
         orderLineItem.setMenu(menu);
         orderLineItem.setMenuId(menu.getId());
