@@ -206,7 +206,7 @@ class MenuServiceTest {
         Menu updatedMenu = menuService.display(id);
 
         // then
-        assertThat(updatedMenu.isDisplayed()).isEqualTo(true);
+        assertThat(updatedMenu.isDisplayed()).isTrue();
     }
 
     @DisplayName("메뉴를 숨김 상태로 변경할 수 있다.")
@@ -224,7 +224,7 @@ class MenuServiceTest {
         Menu updatedMenu = menuService.hide(id);
 
         // then
-        assertThat(updatedMenu.isDisplayed()).isEqualTo(false);
+        assertThat(updatedMenu.isDisplayed()).isFalse();
     }
 
     @DisplayName("저장된 메뉴 리스트를 조회할 수 있다.")
